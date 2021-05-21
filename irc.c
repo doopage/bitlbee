@@ -118,7 +118,7 @@ irc_t *irc_new(int fd)
 	iu->f = &irc_user_root_funcs;
 
 	irc->user = g_new0(irc_user_t, 1);
-	
+
 	irc_set_hosts(irc, NULL, 0);
 
 	conf_loaddefaults(irc);
@@ -183,7 +183,7 @@ void irc_set_hosts(irc_t *irc, const struct sockaddr *remote_addr, const socklen
 	if (host == NULL) {
 		host = g_strdup("localhost.localdomain");
 	}
-	
+
 	if (irc->root->host != irc->root->nick) {
 		g_free(irc->root->host);
 	}
@@ -194,7 +194,7 @@ void irc_set_hosts(irc_t *irc, const struct sockaddr *remote_addr, const socklen
 		}
 		iu->host = g_strdup(myhost);
 	}
-	
+
 	if (irc->user->host != irc->user->nick) {
 		g_free(irc->user->host);
 	}
@@ -789,6 +789,8 @@ int irc_check_login(irc_t *irc)
 				root_command(irc, send_cmd);
 				g_free(send_cmd[1]);
 			}
+
+			irc_rootmsg(irc, "%s", json_object_to_string(event_json_object("LOGIN_SUCCESSFUL")));
 
 			return 1;
 		}
