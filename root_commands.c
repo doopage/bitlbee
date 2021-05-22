@@ -591,6 +591,7 @@ static void cmd_account(irc_t *irc, char **cmd)
 			}
 		}
 
+		irc_rootmsg(irc, "%s", json_object_to_string(event_result_json_object("ACCOUNT_OFF", success_json_object())));
 		return;
 	}
 
