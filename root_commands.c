@@ -488,6 +488,23 @@ static void cmd_account(irc_t *irc, char **cmd)
 			irc_rootmsg(irc, "Note: this account doesn't use password for login");
 		}
 
+		JsonObject *result = success_json_object();
+
+		char *protocol = NULL;
+		if (a->prpl == &protocol_missing) {
+      protocol = g_strdup_printf("%s (missing!)", set_getstr(&a->set, "_protocol_name"));
+    } else {
+      protocol = g_strdup(a->prpl->name);
+    }
+		json_object_set_string_member(result, "protocol", protocol);
+		g_free(protocol);
+
+		json_object_set_string_member(result, "tag", a->tag);
+    json_object_set_string_member(result, "user", a->user);
+    json_object_set_string_member(result, "server", a->server);
+
+		irc_rootmsg(irc, "%s", json_object_to_string(event_result_json_object("ACCOUNT_ADD", result)));
+
 		return;
 	} else if (len >= 1 && g_strncasecmp(cmd[1], "list", len) == 0) {
 		int i = 0;
