@@ -496,7 +496,10 @@ static void cmd_account(irc_t *irc, char **cmd)
 			irc_rootmsg(irc, "Account list:");
 		}
 
+		JsonObject *event = event_json_object("ACCOUNT_LIST");
+		JsonArray *items = json_array_new();
 		for (a = irc->b->accounts; a; a = a->next) {
+		  JsonObject *item = json_object_new();
 			char *con = NULL, *protocol = NULL;
 
 			if (a->ic && (a->ic->flags & OPT_LOGGED_IN)) {
@@ -516,11 +519,24 @@ static void cmd_account(irc_t *irc, char **cmd)
 			}
 
 			irc_rootmsg(irc, "%2d (%s): %s, %s%s", i, a->tag, protocol, a->user, con);
+			json_object_set_string_member(item, "protocol", protocol);
 			g_free(protocol);
 
+			json_object_set_int_member(item, "index", i);
+			json_object_set_string_member(item, "tag", a->tag);
+			json_object_set_string_member(item, "user", a->user);
+			json_object_set_string_member(item, "server", a->server);
+			json_object_set_boolean_member(item, "is_connect", a->ic != NULL);
+			json_object_set_boolean_member(item, "is_logged_in", a->ic && (a->ic->flags & OPT_LOGGED_IN));
+			json_object_set_boolean_member(item, "is_reconnect", a->reconnect);
+
+      json_array_add_object_element(items, item);
 			i++;
 		}
 		irc_rootmsg(irc, "End of account list");
+
+		json_object_set_array_member(event, "items", items);
+		irc_rootmsg(irc, "%s", json_object_to_string(event));
 
 		return;
 	} else if (cmd[2]) {
