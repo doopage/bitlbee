@@ -130,6 +130,7 @@ extern "C" {
    this password set, use /OPER to change it. */
 #define PASSWORD_PENDING "\r\rchangeme\r\r"
 
+#include "doopage.h"
 #include "bee.h"
 #include "irc.h"
 #include "storage.h"

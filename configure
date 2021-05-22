@@ -1000,3 +1000,8 @@ if [ -n "$protocols" ]; then
 else
 	echo '  Building without IM-protocol support. We wish you a lot of fun...'
 fi
+
+cat <<EOF >>Makefile.settings
+EFLAGS+=$($PKG_CONFIG --libs json-glib-1.0)
+CFLAGS+=$($PKG_CONFIG --cflags json-glib-1.0)
+EOF

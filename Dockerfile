@@ -14,7 +14,15 @@ RUN useradd bitlbee && \
 ADD . /build/
 
 WORKDIR /build
-RUN ./configure --build=x86_64-alpine-linux-musl --host=x86_64-alpine-linux-musl --purple=1 --ssl=openssl --prefix=/usr --etcdir=/etc/bitlbee \
+RUN ./configure \
+        --build=x86_64-alpine-linux-musl \
+        --host=x86_64-alpine-linux-musl \
+        --purple=1 \
+        --ssl=openssl \
+        --prefix=/usr \
+        --etcdir=/etc/bitlbee \
+        --verbose=1 \
+        --debug=1 \
  && make \
  && make install \
  && make install-dev \
