@@ -356,6 +356,8 @@ void account_on(bee_t *bee, account_t *a)
 	if (a->ic && !(a->ic->flags & (OPT_SLOW_LOGIN | OPT_LOGGED_IN))) {
 		a->ic->keepalive = b_timeout_add(120000, account_on_timeout, a->ic);
 	}
+
+	irc_rootmsg(bee->ui_data, "%s", json_object_to_string(event_item_json_object("ACCOUNT_ON_ITEM",a->tag)));
 }
 
 void account_off(bee_t *bee, account_t *a)
