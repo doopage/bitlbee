@@ -608,15 +608,22 @@ static void cmd_account(irc_t *irc, char **cmd)
 	}
 
 	if (len >= 1 && g_strncasecmp(cmd[2], "del", len) == 0) {
+		JsonObject *result;
+
 		if (a->flags & ACC_FLAG_LOCKED) {
 			irc_rootmsg(irc, "Account is locked, can't delete");
+			result = failed_json_object("LOCKED");
 		}
 		else if (a->ic) {
 			irc_rootmsg(irc, "Account is still logged in, can't delete");
+			result = failed_json_object("LOGGED_IN");
 		} else {
 			account_del(irc->b, a);
 			irc_rootmsg(irc, "Account deleted");
+			result = success_json_object();
 		}
+
+		irc_rootmsg(irc, "%s", json_object_to_string(event_item_result_json_object("ACCOUNT_DELETE", a->tag, result)));
 	} else if (len >= 2 && g_strncasecmp(cmd[2], "on", len) == 0) {
 		if (a->ic) {
 			irc_rootmsg(irc, "Account already online");
