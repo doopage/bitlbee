@@ -559,6 +559,7 @@ static void cmd_account(irc_t *irc, char **cmd)
 	} else if (cmd[2]) {
 		/* Try the following two only if cmd[2] == NULL */
 	} else if (len >= 2 && g_strncasecmp(cmd[1], "on", len) == 0) {
+	  JsonObject *result = success_json_object();
 		if (irc->b->accounts) {
 			irc_rootmsg(irc, "Trying to get all accounts connected...");
 
@@ -574,8 +575,10 @@ static void cmd_account(irc_t *irc, char **cmd)
 			}
 		} else {
 			irc_rootmsg(irc, "No accounts known. Use `account add' to add one.");
+			result = failed_json_object("NO_ACCOUNT");
 		}
 
+		irc_rootmsg(irc, "%s", json_object_to_string(event_result_json_object("ACCOUNT_ON", result)));
 		return;
 	} else if (len >= 2 && g_strncasecmp(cmd[1], "off", len) == 0) {
 		irc_rootmsg(irc, "Deactivating all active (re)connections...");
