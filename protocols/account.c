@@ -368,6 +368,8 @@ void account_off(bee_t *bee, account_t *a)
 		/* Shouldn't happen */
 		cancel_auto_reconnect(a);
 	}
+
+	irc_rootmsg(bee->ui_data, "%s", json_object_to_string(event_item_json_object("ACCOUNT_OFF_ITEM",a->tag)));
 }
 
 static gboolean account_on_timeout(gpointer d, gint fd, b_input_condition cond)
